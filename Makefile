@@ -14,7 +14,7 @@ OC := $(TOOLCHAIN)objcopy
 OS := $(TOOLCHAIN)size
 
 # Linker script location.
-LDSCRIPT       := ./ld/esp32.ld
+LDSCRIPT       := ./src/ld/esp32.ld
 
 # Set C/LD/AS flags.
 CFLAGS += $(INC) -Wall -Werror -std=gnu11 -nostdlib $(CFLAGS_PLATFORM) $(COPT)
@@ -31,22 +31,22 @@ ASFLAGS += -c -O0 -Wall -fmessage-length=0
 ASFLAGS += $(ASFLAGS_PLATFORM)
 
 # Set C source files.
-C_SRC := $(wildcard *.c)
+C_SRC := $(shell find ./src -name '*.c')
 
 # Define object files
-OBJS := $(addprefix ./bin/objs/,$(notdir $(C_SRC:.c=.o)))
+OBJS := $(patsubst ./src/%.c,./bin/objs/%.o,$(C_SRC))
 
 # Set the first rule in the file to 'make all'
 .PHONY: all
 all: ./bin/main.elf
 
 # Rules to build files.
-./bin/objs/%.o: %.S
-	@mkdir -p ./bin/objs
+./bin/objs/%.o: ./src/%.S
+	@mkdir -p $(dir $@)
 	$(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
 
-./bin/objs/%.o: %.c
-	@mkdir -p ./bin/objs
+./bin/objs/%.o: ./src/%.c
+	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) $< -o $@
 
 ./bin/main.elf: $(OBJS)
@@ -57,3 +57,7 @@ all: ./bin/main.elf
 .PHONY: clean
 clean:
 	rm -rf ./bin
+
+# Print variables for debugging
+print-%:
+	@echo '$*=$($*)'

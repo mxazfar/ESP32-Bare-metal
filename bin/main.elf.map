@@ -7,15 +7,17 @@ Archive member included to satisfy reference by file (symbol)
 
 Discarded input sections
 
+ .text          0x00000000        0x0 bin/objs/main.o
+ .data          0x00000000        0x0 bin/objs/main.o
+ .bss           0x00000000        0x0 bin/objs/main.o
+ .xt.prop       0x00000000       0x24 bin/objs/main.o
  .literal.call_start_cpu0
                 0x00000000        0x0 bin/objs/startup.o
  .text          0x00000000        0x0 bin/objs/startup.o
  .data          0x00000000        0x0 bin/objs/startup.o
  .bss           0x00000000        0x0 bin/objs/startup.o
- .text.startup.main
-                0x00000000        0x6 bin/objs/startup.o
  .xt.lit        0x00000000        0x8 bin/objs/startup.o
- .xt.prop       0x00000000       0x60 bin/objs/startup.o
+ .xt.prop       0x00000000       0x3c bin/objs/startup.o
  .literal       0x00000000        0x0 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
  .data          0x00000000        0x0 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
  .bss           0x00000000        0x0 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
@@ -34,12 +36,13 @@ dram_seg         0x3fff0000         0x00001000         rw
 
 Linker script and memory map
 
+LOAD bin/objs/main.o
 LOAD bin/objs/startup.o
 LOAD /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libm.a
 LOAD /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a
 LOAD /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/esp32/libgcc.a
 
-.iram.text      0x40080400      0x1e4
+.iram.text      0x40080400      0x1f0
                 0x40080400                        . = ALIGN (0x10)
  *(.entry.text)
  *(.text)
@@ -50,19 +53,24 @@ LOAD /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-es
                 0x40080560                memset
  *(.text*)
  .text.call_start_cpu0
-                0x400805ac       0x35 bin/objs/startup.o
-                                 0x45 (size before relaxing)
+                0x400805ac       0x3b bin/objs/startup.o
+                                 0x4f (size before relaxing)
                 0x400805b8                call_start_cpu0
+ *fill*         0x400805e7        0x1 
+ .text.startup.main
+                0x400805e8        0x6 bin/objs/main.o
+                0x400805e8                main
+ *fill*         0x400805ee        0x0 
  *(.init)
  *(.fini)
  *(.rodata)
  *(.rodata*)
-                0x400805e4                        . = ALIGN (0x4)
- *fill*         0x400805e1        0x3 
-                0x400805e4                        _etext = .
-                0x400805e4                        _sidata = .
+                0x400805f0                        . = ALIGN (0x4)
+ *fill*         0x400805ee        0x2 
+                0x400805f0                        _etext = .
+                0x400805f0                        _sidata = .
 
-.data           0x3fff0000        0x0 load address 0x400805e4
+.data           0x3fff0000        0x0 load address 0x400805f0
                 0x3fff0000                        . = ALIGN (0x4)
                 0x3fff0000                        _sdata = .
  *(.data)
@@ -83,59 +91,72 @@ LOAD /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-es
                 [!provide]                        PROVIDE (_end = .)
 OUTPUT(bin/main.elf elf32-xtensa-le)
 
-.debug_frame    0x00000000       0x40
- .debug_frame   0x00000000       0x40 bin/objs/startup.o
+.debug_frame    0x00000000       0x50
+ .debug_frame   0x00000000       0x28 bin/objs/main.o
+ .debug_frame   0x00000028       0x28 bin/objs/startup.o
 
-.debug_info     0x00000000      0x1a0
- .debug_info    0x00000000      0x13c bin/objs/startup.o
- .debug_info    0x0000013c       0x33 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
- .debug_info    0x0000016f       0x31 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
+.debug_info     0x00000000      0x22a
+ .debug_info    0x00000000       0x91 bin/objs/main.o
+ .debug_info    0x00000091      0x135 bin/objs/startup.o
+ .debug_info    0x000001c6       0x33 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
+ .debug_info    0x000001f9       0x31 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
 
-.debug_abbrev   0x00000000      0x133
- .debug_abbrev  0x00000000       0xe3 bin/objs/startup.o
- .debug_abbrev  0x000000e3       0x28 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
- .debug_abbrev  0x0000010b       0x28 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
+.debug_abbrev   0x00000000      0x169
+ .debug_abbrev  0x00000000       0x45 bin/objs/main.o
+ .debug_abbrev  0x00000045       0xd4 bin/objs/startup.o
+ .debug_abbrev  0x00000119       0x28 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
+ .debug_abbrev  0x00000141       0x28 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
 
-.debug_aranges  0x00000000       0x68
+.debug_aranges  0x00000000       0x80
  .debug_aranges
-                0x00000000       0x28 bin/objs/startup.o
+                0x00000000       0x20 bin/objs/main.o
  .debug_aranges
-                0x00000028       0x20 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
+                0x00000020       0x20 bin/objs/startup.o
  .debug_aranges
-                0x00000048       0x20 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
+                0x00000040       0x20 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
+ .debug_aranges
+                0x00000060       0x20 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
 
 .debug_rnglists
-                0x00000000       0x19
+                0x00000000       0x26
  .debug_rnglists
-                0x00000000       0x19 bin/objs/startup.o
+                0x00000000       0x13 bin/objs/main.o
+ .debug_rnglists
+                0x00000013       0x13 bin/objs/startup.o
 
-.debug_line     0x00000000      0x500
- .debug_line    0x00000000       0xab bin/objs/startup.o
- .debug_line    0x000000ab      0x30f /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
- .debug_line    0x000003ba      0x146 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
+.debug_line     0x00000000      0x557
+ .debug_line    0x00000000       0x60 bin/objs/main.o
+ .debug_line    0x00000060       0xa2 bin/objs/startup.o
+ .debug_line    0x00000102      0x30f /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
+ .debug_line    0x00000411      0x146 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
 
 .debug_str      0x00000000      0x317
- .debug_str     0x00000000      0x317 bin/objs/startup.o
-                                0x1b9 (size before relaxing)
+ .debug_str     0x00000000      0x317 bin/objs/main.o
+                                0x150 (size before relaxing)
+ .debug_str     0x00000317      0x1b9 bin/objs/startup.o
  .debug_str     0x00000317      0x123 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
  .debug_str     0x00000317      0x123 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
 
 .debug_line_str
-                0x00000000      0x245
+                0x00000000      0x25f
  .debug_line_str
-                0x00000000      0x245 bin/objs/startup.o
-                                0x166 (size before relaxing)
+                0x00000000      0x25f bin/objs/main.o
+                                 0x69 (size before relaxing)
  .debug_line_str
-                0x00000245      0x110 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
+                0x0000025f      0x175 bin/objs/startup.o
  .debug_line_str
-                0x00000245      0x110 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
+                0x0000025f      0x110 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
+ .debug_line_str
+                0x0000025f      0x110 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
 
 .comment        0x00000000       0x2f
- .comment       0x00000000       0x2f bin/objs/startup.o
+ .comment       0x00000000       0x2f bin/objs/main.o
                                  0x30 (size before relaxing)
+ .comment       0x0000002f       0x30 bin/objs/startup.o
 
 .xtensa.info    0x00000000       0x38
- .xtensa.info   0x00000000       0x38 bin/objs/startup.o
+ .xtensa.info   0x00000000       0x38 bin/objs/main.o
+ .xtensa.info   0x00000038        0x0 bin/objs/startup.o
  .xtensa.info   0x00000038        0x0 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
  .xtensa.info   0x00000038        0x0 /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)
 
@@ -148,7 +169,8 @@ _sbss                                             bin/objs/startup.o
 _sdata                                            bin/objs/startup.o
 _sidata                                           bin/objs/startup.o
 call_start_cpu0                                   bin/objs/startup.o
-main                                              bin/objs/startup.o
+main                                              bin/objs/main.o
+                                                  bin/objs/startup.o
 memcpy                                            /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memcpy.o)
                                                   bin/objs/startup.o
 memset                                            /Users/mazfar/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/13.2.0/../../../../xtensa-esp-elf/lib/esp32/libc.a(libc_a-memset.o)

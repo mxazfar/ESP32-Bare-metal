@@ -1,14 +1,8 @@
 #include <string.h>
 
-extern unsigned int _sbss, _ebss, _sidata, _sdata, _edata;
+#include "main.h"
 
-int main( void ) {
-  // Increment a variable.
-  while ( 1 ) {
-    
-  }
-  return 0;
-}
+extern unsigned int _sbss, _ebss, _sidata, _sdata, _edata;
 
 // Startup logic; this is the application entry point.
 void __attribute__( ( noreturn ) ) call_start_cpu0() {
