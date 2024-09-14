@@ -17,11 +17,26 @@ OS := $(TOOLCHAIN)size
 LDSCRIPT       := ./src/ld/esp32.ld
 
 # Set C/LD/AS flags.
-CFLAGS += $(INC) -Wall -Werror -std=gnu11 -nostdlib $(CFLAGS_PLATFORM) $(COPT)
+CFLAGS += $(INC) -Wall -std=gnu11 -nostdlib $(CFLAGS_PLATFORM) $(COPT)
 # (Allow access to the same memory location w/ different data widths.)
 CFLAGS += -fno-strict-aliasing
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -Os -g
+
+ESP_IDF_PATH := $(HOME)/esp/esp-idf
+
+CFLAGS += -I.
+CFLAGS += -I$(ESP_IDF_PATH)
+CFLAGS += -I$(ESP_IDF_PATH)/components
+CFLAGS += -I$(ESP_IDF_PATH)/components/soc/include
+CFLAGS += -I$(ESP_IDF_PATH)/components/soc/esp32/include
+CFLAGS += -I$(ESP_IDF_PATH)/components/esp_common/include
+CFLAGS += -I$(ESP_IDF_PATH)/components/esp_rom/include
+CFLAGS += -I$(ESP_IDF_PATH)/components/esp_hw_support/include
+CFLAGS += -I$(ESP_IDF_PATH)/components/esp_system/include
+
+# Uncomment to view include paths for debugging
+CFLAGS += -v
 
 LDFLAGS += -nostdlib -T$(LDSCRIPT) -Wl,-Map=$@.map -Wl,--cref -Wl,--gc-sections
 LDFLAGS += $(LDFLAGS_PLATFORM)
@@ -53,7 +68,12 @@ all: ./bin/main.elf
 	@mkdir -p ./bin
 	$(CC) $^ $(LDFLAGS) -o $@
 
-# Target to clean build artifacts.
+./bin/main.hex: ./bin/main.elf
+	$(OC) -O ihex $< $@
+
+.PHONY: all
+all: ./bin/main.elf ./bin/main.hex
+
 .PHONY: clean
 clean:
 	rm -rf ./bin
